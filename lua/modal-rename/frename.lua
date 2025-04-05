@@ -25,7 +25,7 @@ local function create_popup(lines)
         col = col,
         style = 'minimal',
         border = 'rounded',
-        title = ' Rename Files ',
+        title = ' Modal Rename ',
         title_pos = 'center',
     })
 
@@ -45,7 +45,7 @@ function M.setup()
     local dir = get_netrw_dir()
     local files = vim.fn.readdir(dir)
 
-    -- Filter out Netrw-specific entries like ../ and ./"
+    -- Filter out ../ and ./"
     files = vim.tbl_filter(function(f)
         return f ~= '.' and f ~= '..'
     end, files)
@@ -65,11 +65,11 @@ function M.setup()
     M.current_win = win
 
     -- Set buffer-local mappings
-    vim.api.nvim_buf_set_keymap(buf, 'n', '<CR>', ':lua require("valkenr.frename").execute_rename()<CR>',
+    vim.api.nvim_buf_set_keymap(buf, 'n', '<CR>', ':lua require("modal-rename").execute_rename()<CR>',
         {noremap = true, silent = true})
-    vim.api.nvim_buf_set_keymap(buf, 'n', 'q', ':lua require("valkenr.frename").close()<CR>',
+    vim.api.nvim_buf_set_keymap(buf, 'n', 'q', ':lua require("modal-rename").close()<CR>',
         {noremap = true, silent = true})
-    vim.api.nvim_buf_set_keymap(buf, 'n', '<Esc>', ':lua require("valkenr.frename").close()<CR>',
+    vim.api.nvim_buf_set_keymap(buf, 'n', '<Esc>', ':lua require("modal-rename").close()<CR>',
         {noremap = true, silent = true})
 
     -- Set buffer options
@@ -117,8 +117,8 @@ end
 vim.api.nvim_create_autocmd("FileType", {
     pattern = "netrw",
     callback = function()
-        vim.api.nvim_buf_set_keymap(0, 'n', '<leader>rn', ':lua require("valkenr.frename").setup()<CR>',
-            { noremap = true, silent = true, desc = "Rename files in Netrw" })
+        vim.api.nvim_buf_set_keymap(0, 'n', '<leader>rn', ':lua require("modal-rename").setup()<CR>',
+            { noremap = true, silent = true, desc = "Rename all files in directory, modally" })
     end,
 })
 
